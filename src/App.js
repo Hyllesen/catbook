@@ -24,10 +24,8 @@ function App() {
 
   return (
     <div className="App">
+      <h1>CatGram 😼</h1>
       {catWall}
-      <button onClick={loadCats}>
-        <h3>Give me more cats!</h3>
-      </button>
     </div>
   );
 }
