@@ -1,24 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import axios from "axios";
+import debounce from "lodash.debounce";
+import useWindowWidth from "./hooks/useWindowWidth";
 
 function App() {
+  const [cats, addCat] = useState([]);
+  const width = useWindowWidth();
+
+  const loadCats = async () => {
+    const promises = [];
+    for (let i = 0; i < 3; i++) {
+      promises.push(axios.get("https://aws.random.cat/meow"));
+      const responses = await Promise.all(promises);
+      const newCats = responses.map(resp => resp.data.file);
+      addCat(cats.concat(newCats));
+    }
+  };
+
+  useEffect(() => {
+    loadCats();
+  }, []);
+
+  const catWall = cats.map(cat => <img key={cat} width={width} src={cat} />);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {catWall}
+      <button onClick={loadCats}>Give me more cats!</button>
     </div>
   );
 }
