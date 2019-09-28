@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import debounce from "lodash.debounce";
 
 function useWindowWidth() {
   const [width, setWidth] = useState(0);
@@ -9,9 +10,10 @@ function useWindowWidth() {
       console.log(window.innerWidth);
       setWidth(window.innerWidth);
     };
-    window.addEventListener("resize", handleResize);
+    const handleResizeDebounced = debounce(handleResize, 500);
+    window.addEventListener("resize", handleResizeDebounced);
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", handleResizeDebounced);
     };
   }, []);
 
